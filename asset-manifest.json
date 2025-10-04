@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Product-Sentiment-Analysis/static/css/main.e6c13ad2.css",
+    "main.js": "/Product-Sentiment-Analysis/static/js/main.8d16ca6b.js",
+    "static/js/453.aa00e2b2.chunk.js": "/Product-Sentiment-Analysis/static/js/453.aa00e2b2.chunk.js",
+    "index.html": "/Product-Sentiment-Analysis/index.html",
+    "main.e6c13ad2.css.map": "/Product-Sentiment-Analysis/static/css/main.e6c13ad2.css.map",
+    "main.8d16ca6b.js.map": "/Product-Sentiment-Analysis/static/js/main.8d16ca6b.js.map",
+    "453.aa00e2b2.chunk.js.map": "/Product-Sentiment-Analysis/static/js/453.aa00e2b2.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.8d16ca6b.js"
+  ]
+}
