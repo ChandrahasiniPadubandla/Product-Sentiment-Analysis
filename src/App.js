@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, BarChart3, Brain, Activity, FileText, AlertCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
-const API_URL = 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export default function SentimentAnalysisApp() {
   const [dataset, setDataset] = useState(null);
