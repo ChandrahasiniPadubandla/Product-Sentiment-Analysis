@@ -41,6 +41,14 @@ except LookupError:
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({
+        'status': 'online',
+        'message': 'Product Sentiment Analysis Backend is running!',
+        'health_check': '/api/health'
+    })
+
 # Global variables to store data
 data_store = {
     'df': None,
