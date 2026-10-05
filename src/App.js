@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Upload, BarChart3, Brain, Activity, FileText, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Upload, BarChart3, Brain, Activity, FileText, AlertCircle, Wifi, WifiOff } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -11,6 +11,7 @@ export default function SentimentAnalysisApp() {
   const [activeTab, setActiveTab] = useState('logs');
   const [testResults, setTestResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [backendStatus, setBackendStatus] = useState('checking'); // 'connected', 'error', 'checking'
 
   const addLog = (message, type = 'info') => {
     setLogs(prev => [...prev, { 
@@ -19,6 +20,20 @@ export default function SentimentAnalysisApp() {
       type 
     }]);
   };
+
+  useEffect(() => {
+    addLog(`Configured Backend URL: ${API_URL}`, 'info');
+    fetch(`${API_URL}/health`)
+      .then(res => res.json())
+      .then(data => {
+        setBackendStatus('connected');
+        addLog(`✓ Backend online: ${data.message || 'Healthy'}`, 'success');
+      })
+      .catch(err => {
+        setBackendStatus('error');
+        addLog(`✗ Cannot connect to backend at ${API_URL}: ${err.message}`, 'error');
+      });
+  }, []);
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -29,6 +44,7 @@ export default function SentimentAnalysisApp() {
     formData.append('file', file);
 
     try {
+      addLog(`Uploading "${file.name}" (${(file.size / 1024).toFixed(1)} KB) to ${API_URL}/upload...`, 'info');
       const response = await fetch(`${API_URL}/upload`, {
         method: 'POST',
         body: formData
@@ -48,7 +64,7 @@ export default function SentimentAnalysisApp() {
         addLog(`✗ Upload failed: ${data.error}`, 'error');
       }
     } catch (err) {
-      addLog(`✗ Connection error: ${err.message}`, 'error');
+      addLog(`✗ Connection error to ${API_URL}/upload: ${err.message}`, 'error');
     } finally {
       setLoading(false);
     }
@@ -139,6 +155,21 @@ export default function SentimentAnalysisApp() {
         <h1 style={{color: 'white', fontSize: '28px', fontWeight: 'bold', margin: 0}}>
           Sentiment Analysis of Customer Product Reviews using Machine Learning
         </h1>
+        <div style={{marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '13px', color: 'white'}}>
+          {backendStatus === 'connected' ? (
+            <span style={{backgroundColor: '#22c55e', padding: '4px 12px', borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 'bold'}}>
+              <Wifi size={14} /> Backend Connected (Render)
+            </span>
+          ) : backendStatus === 'checking' ? (
+            <span style={{backgroundColor: '#eab308', padding: '4px 12px', borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 'bold'}}>
+              <Wifi size={14} /> Checking Backend Connection...
+            </span>
+          ) : (
+            <span style={{backgroundColor: '#ef4444', padding: '4px 12px', borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 'bold'}}>
+              <WifiOff size={14} /> Backend Unreachable ({API_URL})
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Main Content - Split Layout */}
