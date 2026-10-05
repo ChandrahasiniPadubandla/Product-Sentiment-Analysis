@@ -39,6 +39,13 @@ export default function SentimentAnalysisApp() {
     const file = e.target.files[0];
     if (!file) return;
 
+    // Check file size (limit to 10 MB for cloud free tier)
+    const MAX_SIZE_MB = 10;
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+      addLog(`✗ File is too large: ${(file.size / (1024 * 1024)).toFixed(1)} MB. Free tier cloud hosting has a ${MAX_SIZE_MB} MB limit. Please use a smaller CSV sample (e.g. 1,000–5,000 reviews).`, 'error');
+      return;
+    }
+
     setLoading(true);
     const formData = new FormData();
     formData.append('file', file);
